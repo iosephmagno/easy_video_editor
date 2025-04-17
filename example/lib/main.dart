@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:easy_video_editor/easy_video_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +32,22 @@ class _HomePageState extends State<HomePage> {
   String _status = '';
   double _exportProgress = 0.0;
   String? _filePath;
+  VideoPlayerController? _controller;
+
+  @override
+  dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  void _initVideoPlayer(String path) {
+    _controller = VideoPlayerController.file(File(path))
+      ..initialize().then((_) {
+        setState(() {});
+        _controller?.setLooping(true);
+        _controller?.play();
+      });
+  }
 
   Future<void> _uploadFile() async {
     try {
@@ -58,6 +76,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _status = 'Video processed: $result';
       });
+      if (result != null) {
+        _initVideoPlayer(result);
+      }
     } catch (e) {
       setState(() {
         _status = 'Error: $e';
@@ -73,6 +94,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _status = 'Audio removed: $result';
       });
+      if (result != null) {
+        _initVideoPlayer(result);
+      }
     } catch (e) {
       setState(() {
         _status = 'Error: $e';
@@ -107,6 +131,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _status = 'Video transformed: $result';
       });
+      if (result != null) {
+        _initVideoPlayer(result);
+      }
     } catch (e) {
       setState(() {
         _status = 'Error: $e';
@@ -152,6 +179,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _status = 'Export completed: $result';
       });
+      if (result != null) {
+        _initVideoPlayer(result);
+      }
     } catch (e) {
       setState(() {
         _status = 'Error: $e';
@@ -220,6 +250,12 @@ class _HomePageState extends State<HomePage> {
                     Text('${(_exportProgress * 100).toStringAsFixed(1)}%',
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                   ],
+                ),
+              if (_controller != null &&
+                  _controller?.value.isInitialized == true)
+                AspectRatio(
+                  aspectRatio: _controller!.value.aspectRatio,
+                  child: VideoPlayer(_controller!),
                 ),
             ],
           ),

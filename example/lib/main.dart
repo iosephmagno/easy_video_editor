@@ -85,7 +85,6 @@ class _HomePageState extends State<HomePage> {
       final editor = VideoEditorBuilder(videoPath: _filePath!);
 
       final metadata = await editor.getVideoMetadata();
-      //TODO Android OK, a tester pour iOS maintenant !
       setState(() {
         _status = 'Metadata: $metadata';
       });

@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _exportWithProgress() async {
+  Future<void> _compresWithProgress() async {
     try {
       // Reset progress
       setState(() {
@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
       });
 
       final editor = VideoEditorBuilder(videoPath: _filePath!)
-          .trim(startTimeMs: 1000, endTimeMs: 10000)
+         // .trim(startTimeMs: 1000, endTimeMs: 10000)
           .compress(resolution: VideoResolution.p720);
 
       final result = await editor.export(onProgress: (progress) {
@@ -237,8 +237,8 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 10),
               ElevatedButton(
-                onPressed: _filePath != null ? _exportWithProgress : null,
-                child: const Text('Export with Progress'),
+                onPressed: _filePath != null ? _compresWithProgress : null,
+                child: const Text('Compress with Progress'),
               ),
               const SizedBox(height: 10),
               // Progress indicator
